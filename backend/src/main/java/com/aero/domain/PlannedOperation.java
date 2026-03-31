@@ -30,8 +30,11 @@ public class PlannedOperation {
     @Column(nullable = false, length = 200)
     private String shortDescription;
 
-    @Column(length = 500)
-    private String kmlFilePath;
+    @Column(length = 255)
+    private String kmlFileName;
+
+    @Lob
+    private String kmlContent;
 
     private Integer routeKm;
 
