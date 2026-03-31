@@ -250,17 +250,15 @@ class AirfieldControllerTest {
     // ==================== SECURITY ====================
 
     @Nested
-    @DisplayName("Security — unauthenticated access")
+    @DisplayName("Security — role-based access")
     class SecurityTests {
 
         @Test
         @WithMockUser(roles = {})
-        @DisplayName("unauthenticated user — GET returns 200 (authenticated)")
-        void getAll_authenticated_returns200() throws Exception {
-            when(airfieldService.findAll()).thenReturn(List.of());
-
+        @DisplayName("user without roles — GET returns 403")
+        void getAll_noRoles_returns403() throws Exception {
             mockMvc.perform(get(BASE_URL))
-                    .andExpect(status().isOk());
+                    .andExpect(status().isForbidden());
         }
     }
 
