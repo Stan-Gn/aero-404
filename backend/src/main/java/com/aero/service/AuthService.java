@@ -1,6 +1,7 @@
 package com.aero.service;
 
 import com.aero.domain.AppUser;
+import com.aero.domain.UserRole;
 import com.aero.dto.LoginRequestDto;
 import com.aero.dto.LoginResponseDto;
 import com.aero.dto.RegisterRequestDto;
@@ -36,7 +37,6 @@ public class AuthService {
                 .lastName(dto.lastName())
                 .email(dto.email())
                 .password(passwordEncoder.encode(dto.password()))
-                .role(dto.role())
                 .build();
 
         AppUser saved = appUserRepository.save(appUser);
@@ -48,8 +48,14 @@ public class AuthService {
         AppUser appUser = appUserRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new ValidationException("Invalid credentials"));
 
+        System.out.println(appUser);
+
         if (!passwordEncoder.matches(dto.password(), appUser.getPassword())) {
             throw new ValidationException("Invalid credentials");
+        }
+
+        if (appUser.getRole() == null) {
+            throw new ValidationException("Account has no role assigned. Contact administrator.");
         }
 
         String token = jwtTokenProvider.generateToken(appUser.getEmail(), appUser.getRole());

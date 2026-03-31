@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo
+    name: aero
   datasource:
     # Dane połączenia - Spring pobierze je ze zmiennych środowiskowych na Renderze
     url: ${SPRING_DATASOURCE_URL}
