@@ -48,7 +48,7 @@ class HelicopterControllerSecurityTest {
                 "type": "Mi-8",
                 "description": "Transport helicopter",
                 "maxCrew": 4,
-                "maxPayload": 3000,
+                "maxPayload": 500,
                 "status": "ACTIVE",
                 "reviewDate": "2027-12-31",
                 "rangeKm": 500
@@ -67,7 +67,7 @@ class HelicopterControllerSecurityTest {
     private static HelicopterResponseDto sampleResponse(Long id) {
         return new HelicopterResponseDto(
                 id, "SP-HEL1", "Mi-8", "Transport helicopter",
-                4, 3000, HelicopterStatus.ACTIVE,
+                4, 500, HelicopterStatus.ACTIVE,
                 LocalDate.of(2027, 12, 31), 500
         );
     }
