@@ -54,6 +54,7 @@ public class PlannedOperationService {
     @Autowired
     private RouteCalculatorService routeCalculatorService;
 
+    @Transactional(readOnly = true)
     public List<PlannedOperationResponseDto> findAll(OperationStatus filter) {
         List<PlannedOperation> operations;
         if (filter != null) {
@@ -64,12 +65,14 @@ public class PlannedOperationService {
         return operations.stream().map(this::mapToResponseDto).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<PlannedOperationResponseDto> findAll() {
         return operationRepository.findAllByOrderByPlannedDateFromAsc().stream()
                 .map(this::mapToResponseDto)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public PlannedOperationResponseDto findById(Long id) {
         PlannedOperation operation = operationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("PlannedOperation", id));

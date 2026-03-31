@@ -33,7 +33,7 @@ public class PlannedOperation {
     @Column(length = 255)
     private String kmlFileName;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String kmlContent;
 
     private Integer routeKm;
