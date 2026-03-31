@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: demo
+  datasource:
+    # Dane połączenia - Spring pobierze je ze zmiennych środowiskowych na Renderze
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    # Hibernate - automatyczne tworzenie/aktualizacja tabel
+    hibernate:
+      ddl-auto: update
+    # Opcjonalnie: pokazywanie zapytań SQL w logach
+    show-sql: true

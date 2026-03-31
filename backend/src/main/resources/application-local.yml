@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: aero
+  datasource:
+    # Dane połączenia - Spring pobierze je ze zmiennych środowiskowych na Renderze
+    url: jdbc:postgresql://dpg-d73ujoqdbo4c738k2g7g-a.ohio-postgres.render.com/testdb_6ot4
+    username: dbuser
+    password: 6SIOyJ0h9VhjyRQaFs3FCrfHAbAzqne2
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    # Hibernate - automatyczne tworzenie/aktualizacja tabel
+    hibernate:
+      ddl-auto: update
+    # Opcjonalnie: pokazywanie zapytań SQL w logach
+    show-sql: true
