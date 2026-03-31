@@ -1,6 +1,11 @@
 package com.aero.service;
 
-import com.aero.domain.*;
+import com.aero.domain.AppUser;
+import com.aero.domain.OperationComment;
+import com.aero.domain.OperationHistory;
+import com.aero.domain.OperationStatus;
+import com.aero.domain.PlannedOperation;
+import com.aero.domain.UserRole;
 import com.aero.dto.OperationCommentDto;
 import com.aero.dto.OperationHistoryDto;
 import com.aero.dto.PlannedOperationRequestDto;
@@ -12,7 +17,6 @@ import com.aero.repo.AppUserRepository;
 import com.aero.repo.OperationCommentRepository;
 import com.aero.repo.OperationHistoryRepository;
 import com.aero.repo.PlannedOperationRepository;
-import com.aero.service.KmlParserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -75,6 +78,9 @@ public class PlannedOperationService {
 
     @Transactional
     public PlannedOperationResponseDto create(PlannedOperationRequestDto dto, String kmlContent) {
+        if (kmlContent == null || kmlContent.isBlank()) {
+            throw new ValidationException("KML file is required for planned operation");
+        }
         validateRequestDates(dto);
 
         AppUser currentUser = getCurrentUser();
@@ -330,7 +336,8 @@ public class PlannedOperationService {
     }
 
     private void validateRequestDates(PlannedOperationRequestDto dto) {
-        if (dto.proposedDateFrom().isAfter(dto.proposedDateTo())) {
+        if (dto.proposedDateFrom() != null && dto.proposedDateTo() != null
+                && dto.proposedDateFrom().isAfter(dto.proposedDateTo())) {
             throw new ValidationException("Proposed date from must be before proposed date to");
         }
     }

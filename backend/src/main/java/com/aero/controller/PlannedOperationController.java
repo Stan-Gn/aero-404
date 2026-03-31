@@ -5,6 +5,9 @@ import com.aero.dto.OperationCommentDto;
 import com.aero.dto.PlannedOperationRequestDto;
 import com.aero.dto.PlannedOperationResponseDto;
 import com.aero.service.PlannedOperationService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,7 @@ public class PlannedOperationController {
     private PlannedOperationService operationService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','PLANNER','SUPERVISOR','PILOT')")
     public ResponseEntity<List<PlannedOperationResponseDto>> getAll(
             @RequestParam(required = false) OperationStatus status) {
         log.info("GET /api/v1/operations with status filter: {}", status);
@@ -38,6 +42,7 @@ public class PlannedOperationController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','PLANNER','SUPERVISOR','PILOT')")
     public ResponseEntity<PlannedOperationResponseDto> getById(@PathVariable Long id) {
         log.info("GET /api/v1/operations/{}", id);
         PlannedOperationResponseDto operation = operationService.findById(id);
@@ -47,7 +52,7 @@ public class PlannedOperationController {
     @PostMapping(consumes = "multipart/form-data")
     @PreAuthorize("hasAnyRole('PLANNER','SUPERVISOR')")
     public ResponseEntity<PlannedOperationResponseDto> create(
-            @RequestPart PlannedOperationRequestDto dto,
+            @Valid @RequestPart PlannedOperationRequestDto dto,
             @RequestPart(required = false) MultipartFile kmlFile) {
         log.info("POST /api/v1/operations - creating operation: {}", dto.orderNumber());
 
@@ -65,11 +70,11 @@ public class PlannedOperationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
     @PreAuthorize("hasAnyRole('PLANNER','SUPERVISOR')")
     public ResponseEntity<PlannedOperationResponseDto> update(
             @PathVariable Long id,
-            @RequestPart PlannedOperationRequestDto dto,
+            @Valid @RequestPart PlannedOperationRequestDto dto,
             @RequestPart(required = false) MultipartFile kmlFile) {
         log.info("PUT /api/v1/operations/{} - updating operation", id);
 
@@ -88,7 +93,7 @@ public class PlannedOperationController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('SUPERVISOR','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/v1/operations/{}", id);
         operationService.delete(id);
@@ -126,12 +131,16 @@ public class PlannedOperationController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OperationCommentDto> addComment(
             @PathVariable Long id,
-            @RequestBody CommentRequest request) {
+            @Valid @RequestBody CommentRequest request) {
         log.info("POST /api/v1/operations/{}/comments", id);
         OperationCommentDto comment = operationService.addComment(id, request.text());
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 
-    record CommentRequest(String text) {
+    record CommentRequest(
+            @NotBlank(message = "Comment text is required")
+            @Size(max = 500, message = "Comment must be at most 500 characters")
+            String text
+    ) {
     }
 }

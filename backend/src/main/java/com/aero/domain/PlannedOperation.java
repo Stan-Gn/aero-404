@@ -24,10 +24,10 @@ public class PlannedOperation {
     @Column(nullable = false, unique = true)
     private String autoNumber;
 
-    @Column(length = 100)
+    @Column(length = 30)
     private String orderNumber;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 100)
     private String shortDescription;
 
     @Column(length = 255)
@@ -41,10 +41,8 @@ public class PlannedOperation {
     @Column(columnDefinition = "TEXT")
     private String routePoints;
 
-    @Column(nullable = false)
     private LocalDate proposedDateFrom;
 
-    @Column(nullable = false)
     private LocalDate proposedDateTo;
 
     private LocalDate plannedDateFrom;
