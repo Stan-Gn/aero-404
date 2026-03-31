@@ -93,7 +93,7 @@ public class PlannedOperationController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SUPERVISOR','ADMIN')")
+    @PreAuthorize("hasAnyRole('PLANNER','SUPERVISOR')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("DELETE /api/v1/operations/{}", id);
         operationService.delete(id);
@@ -128,7 +128,7 @@ public class PlannedOperationController {
     }
 
     @PostMapping("/{id}/comments")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN','PLANNER','SUPERVISOR','PILOT')")
     public ResponseEntity<OperationCommentDto> addComment(
             @PathVariable Long id,
             @Valid @RequestBody CommentRequest request) {

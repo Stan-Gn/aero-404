@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecConf {
 
     @Autowired
@@ -41,6 +43,15 @@ public class SecConf {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        // Administracja (PRD 7.2): ADMIN pełny, SUPERVISOR/PILOT podgląd, PLANNER brak
+                        .requestMatchers("/api/v1/helicopters/**").hasAnyRole("ADMIN", "SUPERVISOR", "PILOT")
+                        .requestMatchers("/api/v1/crew-members/**").hasAnyRole("ADMIN", "SUPERVISOR", "PILOT")
+                        .requestMatchers("/api/v1/airfields/**").hasAnyRole("ADMIN", "SUPERVISOR", "PILOT")
+                        .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "SUPERVISOR", "PILOT")
+                        // Planowanie operacji (PRD 7.2): wszystkie role mają jakiś dostęp
+                        .requestMatchers("/api/v1/operations/**").hasAnyRole("ADMIN", "PLANNER", "SUPERVISOR", "PILOT")
+                        // Zlecenia na lot (PRD 7.2): PILOT/SUPERVISOR/ADMIN, PLANNER brak
+                        .requestMatchers("/api/v1/flight-orders/**").hasAnyRole("ADMIN", "PILOT", "SUPERVISOR")
                         .anyRequest().authenticated()
                 );
 
