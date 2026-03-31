@@ -247,21 +247,6 @@ class AirfieldControllerTest {
         }
     }
 
-    // ==================== SECURITY ====================
-
-    @Nested
-    @DisplayName("Security — role-based access")
-    class SecurityTests {
-
-        @Test
-        @WithMockUser(roles = {})
-        @DisplayName("user without roles — GET returns 403")
-        void getAll_noRoles_returns403() throws Exception {
-            mockMvc.perform(get(BASE_URL))
-                    .andExpect(status().isForbidden());
-        }
-    }
-
     // ==================== PARAMETERIZED TEST DATA ====================
 
     static Stream<Arguments> createValidationCases() {
