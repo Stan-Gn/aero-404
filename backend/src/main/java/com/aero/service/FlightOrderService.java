@@ -243,7 +243,7 @@ public class FlightOrderService {
         if (order.getStatus() != FlightOrderStatus.ACCEPTED) {
             throw new ValidationException("Can only mark as partially done flight orders in ACCEPTED status");
         }
-        validateActualTimes(order);
+        // validateActualTimes(order); // TODO: odkomentować gdy frontend doda pola actualDeparture/actualLanding
 
         order.setStatus(FlightOrderStatus.PARTIALLY_DONE);
         for (PlannedOperation op : order.getPlannedOperations()) {
@@ -264,7 +264,7 @@ public class FlightOrderService {
         if (order.getStatus() != FlightOrderStatus.ACCEPTED) {
             throw new ValidationException("Can only mark as done flight orders in ACCEPTED status");
         }
-        validateActualTimes(order);
+        // validateActualTimes(order); // TODO: odkomentować gdy frontend doda pola actualDeparture/actualLanding
 
         order.setStatus(FlightOrderStatus.DONE);
         for (PlannedOperation op : order.getPlannedOperations()) {

@@ -379,31 +379,6 @@ class FlightOrderIntegrationTest {
                 .with(user("supervisor@test.pl").roles("SUPERVISOR"))).andExpect(status().isOk());
         entityManager.flush(); entityManager.clear();
 
-        // Ustaw czasy rzeczywiste przez PUT
-        String updateJson = """
-                {
-                    "plannedDeparture":  "2027-06-15T08:00:00",
-                    "plannedLanding":    "2027-06-15T12:00:00",
-                    "actualDeparture":   "2027-06-15T08:05:00",
-                    "actualLanding":     "2027-06-15T12:10:00",
-                    "pilotId":           %d,
-                    "helicopterId":      %d,
-                    "crewMemberIds":     [],
-                    "departureAirfieldId": %d,
-                    "arrivalAirfieldId":   %d,
-                    "operationIds":      [%d],
-                    "estimatedRouteKm":  150
-                }
-                """.formatted(pilotCrewMemberId, helicopterId, departureId, arrivalId, operationId);
-
-        mockMvc.perform(put(BASE_URL + "/" + id)
-                        .with(user(PILOT_EMAIL).roles("PILOT"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.actualDeparture").isNotEmpty());
-        entityManager.flush(); entityManager.clear();
-
         // ACCEPTED → DONE
         mockMvc.perform(post(BASE_URL + "/" + id + "/complete")
                         .with(user(PILOT_EMAIL).roles("PILOT"))
@@ -448,26 +423,27 @@ class FlightOrderIntegrationTest {
         assertThat(op.getStatus()).isEqualTo(OperationStatus.CONFIRMED);
     }
 
-    @Test
-    @DisplayName("POST /flight-orders/{id}/complete — brak actualDeparture/actualLanding → 400")
-    void complete_withoutActualTimes_returns400() throws Exception {
-        Long id = createOrder();
-
-        mockMvc.perform(post(BASE_URL + "/" + id + "/submit")
-                .with(user(PILOT_EMAIL).roles("PILOT")));
-        entityManager.flush(); entityManager.clear();
-
-        mockMvc.perform(post(BASE_URL + "/" + id + "/accept")
-                .with(user("supervisor@test.pl").roles("SUPERVISOR")));
-        entityManager.flush(); entityManager.clear();
-
-        mockMvc.perform(post(BASE_URL + "/" + id + "/complete")
-                        .with(user(PILOT_EMAIL).roles("PILOT"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"result": "Zrealizowane w całości"}
-                                """))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", containsString("Actual departure and landing times are required")));
-    }
+    // TODO: odkomentować gdy frontend doda pola actualDeparture/actualLanding
+    // @Test
+    // @DisplayName("POST /flight-orders/{id}/complete — brak actualDeparture/actualLanding → 400")
+    // void complete_withoutActualTimes_returns400() throws Exception {
+    //     Long id = createOrder();
+    //
+    //     mockMvc.perform(post(BASE_URL + "/" + id + "/submit")
+    //             .with(user(PILOT_EMAIL).roles("PILOT")));
+    //     entityManager.flush(); entityManager.clear();
+    //
+    //     mockMvc.perform(post(BASE_URL + "/" + id + "/accept")
+    //             .with(user("supervisor@test.pl").roles("SUPERVISOR")));
+    //     entityManager.flush(); entityManager.clear();
+    //
+    //     mockMvc.perform(post(BASE_URL + "/" + id + "/complete")
+    //                     .with(user(PILOT_EMAIL).roles("PILOT"))
+    //                     .contentType(MediaType.APPLICATION_JSON)
+    //                     .content("""
+    //                             {"result": "Zrealizowane w całości"}
+    //                             """))
+    //             .andExpect(status().isBadRequest())
+    //             .andExpect(jsonPath("$.message", containsString("Actual departure and landing times are required")));
+    // }
 }

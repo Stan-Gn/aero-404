@@ -533,20 +533,21 @@ class FlightOrderControllerTest {
                     .andExpect(jsonPath("$.status").value("NOT_DONE"));
         }
 
-        @Test
-        @DisplayName("missing actual times — returns 400")
-        void complete_missingActualTimes_returns400() throws Exception {
-            when(flightOrderService.markDone(1L))
-                    .thenThrow(new ValidationException("Actual departure and landing times are required before completing a flight order"));
-
-            mockMvc.perform(post(BASE_URL + "/1/complete")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content("""
-                                    {"result": "Zrealizowane w całości"}
-                                    """))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.message", containsString("Actual departure and landing times are required")));
-        }
+        // TODO: odkomentować gdy frontend doda pola actualDeparture/actualLanding
+        // @Test
+        // @DisplayName("missing actual times — returns 400")
+        // void complete_missingActualTimes_returns400() throws Exception {
+        //     when(flightOrderService.markDone(1L))
+        //             .thenThrow(new ValidationException("Actual departure and landing times are required before completing a flight order"));
+        //
+        //     mockMvc.perform(post(BASE_URL + "/1/complete")
+        //                     .contentType(MediaType.APPLICATION_JSON)
+        //                     .content("""
+        //                             {"result": "Zrealizowane w całości"}
+        //                             """))
+        //             .andExpect(status().isBadRequest())
+        //             .andExpect(jsonPath("$.message", containsString("Actual departure and landing times are required")));
+        // }
 
         @Test
         @DisplayName("wrong status — returns 400")
