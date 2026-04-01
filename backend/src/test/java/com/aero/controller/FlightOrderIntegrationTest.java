@@ -409,7 +409,7 @@ class FlightOrderIntegrationTest {
                         .with(user(PILOT_EMAIL).roles("PILOT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"result": "DONE"}
+                                {"result": "Zrealizowane w całości"}
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("DONE"));
@@ -437,7 +437,7 @@ class FlightOrderIntegrationTest {
                         .with(user(PILOT_EMAIL).roles("PILOT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"result": "NOT_DONE"}
+                                {"result": "Nie zrealizowane"}
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("NOT_DONE"));
@@ -465,7 +465,7 @@ class FlightOrderIntegrationTest {
                         .with(user(PILOT_EMAIL).roles("PILOT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"result": "DONE"}
+                                {"result": "Zrealizowane w całości"}
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", containsString("Actual departure and landing times are required")));

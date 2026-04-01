@@ -499,35 +499,35 @@ class FlightOrderControllerTest {
             mockMvc.perform(post(BASE_URL + "/1/complete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"result": "DONE"}
+                                    {"result": "Zrealizowane w całości"}
                                     """))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.status").value("DONE"));
         }
 
         @Test
-        @DisplayName("PARTIALLY_DONE — happy path returns 200")
+        @DisplayName("Zrealizowane w części — happy path returns 200")
         void complete_partiallyDone_returns200() throws Exception {
             when(flightOrderService.markPartiallyDone(1L)).thenReturn(sampleResponse(1L, FlightOrderStatus.PARTIALLY_DONE));
 
             mockMvc.perform(post(BASE_URL + "/1/complete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"result": "PARTIALLY_DONE"}
+                                    {"result": "Zrealizowane w części"}
                                     """))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.status").value("PARTIALLY_DONE"));
         }
 
         @Test
-        @DisplayName("NOT_DONE — happy path returns 200")
+        @DisplayName("Nie zrealizowane — happy path returns 200")
         void complete_notDone_returns200() throws Exception {
             when(flightOrderService.markNotDone(1L)).thenReturn(sampleResponse(1L, FlightOrderStatus.NOT_DONE));
 
             mockMvc.perform(post(BASE_URL + "/1/complete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"result": "NOT_DONE"}
+                                    {"result": "Nie zrealizowane"}
                                     """))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.status").value("NOT_DONE"));
@@ -542,7 +542,7 @@ class FlightOrderControllerTest {
             mockMvc.perform(post(BASE_URL + "/1/complete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"result": "DONE"}
+                                    {"result": "Zrealizowane w całości"}
                                     """))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.message", containsString("Actual departure and landing times are required")));
@@ -557,7 +557,7 @@ class FlightOrderControllerTest {
             mockMvc.perform(post(BASE_URL + "/1/complete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"result": "DONE"}
+                                    {"result": "Zrealizowane w całości"}
                                     """))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.message").value("Can only mark as done flight orders in ACCEPTED status"));
@@ -594,7 +594,7 @@ class FlightOrderControllerTest {
             mockMvc.perform(post(BASE_URL + "/999/complete")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
-                                    {"result": "DONE"}
+                                    {"result": "Zrealizowane w całości"}
                                     """))
                     .andExpect(status().isNotFound());
         }

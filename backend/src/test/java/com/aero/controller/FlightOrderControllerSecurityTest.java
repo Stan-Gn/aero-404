@@ -76,7 +76,7 @@ class FlightOrderControllerSecurityTest {
             """;
 
     private static final String COMPLETE_JSON = """
-            { "result": "DONE" }
+            { "result": "Zrealizowane w całości" }
             """;
 
     // ==================== PILOT — pełny dostęp ====================

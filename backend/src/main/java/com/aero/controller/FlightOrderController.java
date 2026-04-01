@@ -92,12 +92,17 @@ public class FlightOrderController {
             @PathVariable Long id,
             @Valid @RequestBody FlightOrderCompleteRequest request) {
         log.info("POST /api/v1/flight-orders/{}/complete with result: {}", id, request.result());
-        FlightOrderResponseDto result = switch (request.result()) {
-            case "DONE" -> flightOrderService.markDone(id);
-            case "PARTIALLY_DONE" -> flightOrderService.markPartiallyDone(id);
-            case "NOT_DONE" -> flightOrderService.markNotDone(id);
-            default -> throw new IllegalArgumentException("Invalid result: " + request.result() + ". Must be DONE, PARTIALLY_DONE, or NOT_DONE");
-        };
+        String resultText = request.result();
+        FlightOrderResponseDto result;
+        if (resultText.contains("Zrealizowane w całości")) {
+            result = flightOrderService.markDone(id);
+        } else if (resultText.contains("Zrealizowane w części")) {
+            result = flightOrderService.markPartiallyDone(id);
+        } else if (resultText.contains("Nie zrealizowane")) {
+            result = flightOrderService.markNotDone(id);
+        } else {
+            throw new IllegalArgumentException("Invalid result: " + resultText + ". Must contain 'Zrealizowane w całości', 'Zrealizowane w części', or 'Nie zrealizowane'");
+        }
         return ResponseEntity.ok(result);
     }
 
